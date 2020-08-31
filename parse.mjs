@@ -7,7 +7,7 @@
 
 //jslint for, this
 
-export function make_parse() {
+export function parse(source) {
     var scope;
     var symbol_table = {};
     var token;
@@ -544,7 +544,7 @@ export function make_parse() {
         return this;
     });
 
-    return function (source) {
+    var parse_input = function (source) {
         tokens = source.tokens("=<>!+-*&|/%^", "=<>&|");
         token_nr = 0;
         scope = null;
@@ -555,4 +555,6 @@ export function make_parse() {
         scope.pop();
         return s;
     };
+
+    return parse_input(source);
 };

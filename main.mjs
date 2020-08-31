@@ -1,4 +1,4 @@
-import { make_parse } from './parse.mjs';
+import { parse } from './parse.mjs';
 import './tokens.mjs';
 
 /*jslint evil: true */
@@ -7,7 +7,7 @@ import './tokens.mjs';
     toString, write
 */
 
-/*global JSON, make_parse, parse, source, tree */
+/*global JSON, parse, parse, source, tree */
 
 // Make a new object that inherits members from an existing object.
 
@@ -30,8 +30,6 @@ Object.prototype.error = function (message, t) {
 
 
 (function () {
-    var parse = make_parse();
-
     function go(source) {
         var string, tree;
         try {
@@ -45,6 +43,8 @@ Object.prototype.error = function (message, t) {
         console.log(string);
     }
 
-    go("var make_parse = " + (make_parse.toSource ?
-            make_parse.toSource() : make_parse.toString()) + ";");
+    go("var parse = " + ( parse.toSource
+                        ? parse.toSource()
+                        : parse.toString()) + ";"
+                        );
 }());
