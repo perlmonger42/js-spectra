@@ -1,17 +1,9 @@
-import { parse } from './parse.mjs';
-import './tokens.mjs';
-
-/*jslint evil: true */
-
-/*members create, error, message, name, prototype, stringify, toSource,
-    toString, write
-*/
-
-/*global JSON, parse, parse, source, tree */
+import { parse } from "./parse.mjs";
+import "./tokens.mjs";
 
 // Make a new object that inherits members from an existing object.
 
-if (typeof Object.create !== 'function') {
+if (typeof Object.create !== "function") {
     Object.create = function (o) {
         function F() {}
         F.prototype = o;
@@ -32,19 +24,22 @@ Object.prototype.error = function (message, t) {
 (function () {
     function go(source) {
         var string, tree;
+
         try {
             tree = parse(source);
-            string = JSON.stringify(tree, ['key', 'name', 'message',
-                'value', 'arity', 'first', 'second', 'third', 'fourth'], 4);
+            string = JSON.stringify(tree, [
+                "key", "name", "message", "value",
+                "arity", "first", "second", "third", "fourth"
+            ], 4);
         } catch (e) {
-            string = JSON.stringify(e, ['name', 'message', 'from', 'to', 'key',
-                    'value', 'arity', 'first', 'second', 'third', 'fourth'], 4);
+            string = JSON.stringify(e, [
+                "name", "message", "from", "to", "key",
+                "value", "arity", "first", "second", "third", "fourth"
+            ], 4);
         }
         console.log(string);
     }
 
-    go("var parse = " + ( parse.toSource
-                        ? parse.toSource()
-                        : parse.toString()) + ";"
-                        );
+    go("var parse = " +
+        (parse.toSource ? parse.toSource() : parse.toString()) + ";");
 }());

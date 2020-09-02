@@ -5,8 +5,6 @@
 // Douglas Crockford
 // 2016-02-15
 
-//jslint for, this
-
 export function parse(source) {
     var scope;
     var symbol_table = {};
@@ -38,7 +36,7 @@ export function parse(source) {
         find: function (n) {
             var e = this;
             var o;
-            while (true) {
+            for (;;) {
                 o = e.def[n];
                 if (o && typeof o !== "function") {
                     return e.def[n];
@@ -151,7 +149,7 @@ export function parse(source) {
     var statements = function () {
         var a = [];
         var s;
-        while (true) {
+        for (;;) {
             if (token.id === "}" || token.id === "(end)") {
                 break;
             }
@@ -177,7 +175,7 @@ export function parse(source) {
         nud: function () {
             this.error("Undefined.");
         },
-        led: function (ignore) {
+        led: function (ignored) {
             this.error("Missing operator.");
         }
     };
@@ -355,7 +353,7 @@ export function parse(source) {
             }
         }
         if (token.id !== ")") {
-            while (true) {
+            for (;;) {
                 a.push(expression(0));
                 if (token.id !== ",") {
                     break;
@@ -388,7 +386,7 @@ export function parse(source) {
         }
         advance("(");
         if (token.id !== ")") {
-            while (true) {
+            for (;;) {
                 if (token.arity !== "name") {
                     token.error("Expected a parameter name.");
                 }
@@ -414,7 +412,7 @@ export function parse(source) {
     prefix("[", function () {
         var a = [];
         if (token.id !== "]") {
-            while (true) {
+            for (;;) {
                 a.push(expression(0));
                 if (token.id !== ",") {
                     break;
@@ -433,7 +431,7 @@ export function parse(source) {
         var n;
         var v;
         if (token.id !== "}") {
-            while (true) {
+            for (;;) {
                 n = token;
                 if (n.arity !== "name" && n.arity !== "literal") {
                     token.error("Bad property name.");
@@ -468,7 +466,7 @@ export function parse(source) {
         var a = [];
         var n;
         var t;
-        while (true) {
+        for (;;) {
             n = token;
             if (n.arity !== "name") {
                 n.error("Expected a new variable name.");
@@ -544,6 +542,19 @@ export function parse(source) {
         return this;
     });
 
+    stmt("for", function () {
+        advance("(");
+        if (token.id !== ";") { this.first = expression(0); }
+        advance(";");
+        if (token.id !== ";") { this.second = expression(0); }
+        advance(";");
+        if (token.id !== ")") { this.third = expression(0); }
+        advance(")");
+        this.fourth = block();
+        this.arity = "statement";
+        return this;
+    });
+
     var parse_input = function (source) {
         tokens = source.tokens("=<>!+-*&|/%^", "=<>&|");
         token_nr = 0;
@@ -557,4 +568,4 @@ export function parse(source) {
     };
 
     return parse_input(source);
-};
+}

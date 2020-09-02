@@ -1,0 +1,28 @@
+{
+  "name": "js-spectra",
+  "version": "1.0.0",
+  "description": "\"Top-Down Operator Precedence\" parser for Spectra",
+  "main": "main.mjs",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^7.7.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/perlmonger42/js-spectra.git"
+  },
+  "keywords": [
+    "Simplified JavaScript",
+    "Spectra Programming Language",
+    "TDOP"
+  ],
+  "author": "Thom Boyer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/perlmonger42/js-spectra/issues"
+  },
+  "homepage": "https://github.com/perlmonger42/js-spectra#readme"
+}

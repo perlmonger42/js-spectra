@@ -20,10 +20,8 @@
 // will match any of these:
 //      <=  >>  >>>  <>  >=  +: -: &: &&: &&
 
-/*jslint this */
-
 String.prototype.tokens = function (prefix, suffix) {
-    'use strict';
+    "use strict";
     var c;                      // The current character.
     var from;                   // The index of the start of the token.
     var i = 0;                  // The index of the current character.
@@ -34,9 +32,9 @@ String.prototype.tokens = function (prefix, suffix) {
 
     var result = [];            // An array to hold the results.
 
+    // Make a token object.
     var make = function (type, value) {
 
-// Make a token object.
 
         return {
             type: type,
@@ -46,79 +44,70 @@ String.prototype.tokens = function (prefix, suffix) {
         };
     };
 
-// Begin tokenization. If the source string is empty, return nothing.
-
+    // Begin tokenization. If the source string is empty, return nothing.
     if (!this) {
         return;
     }
 
-// If prefix and suffix strings are not provided, supply defaults.
-
-    if (typeof prefix !== 'string') {
-        prefix = '<>+-&';
+    // If prefix and suffix strings are not provided, supply defaults.
+    if (typeof prefix !== "string") {
+        prefix = "<>+-&";
     }
-    if (typeof suffix !== 'string') {
-        suffix = '=>&:';
+    if (typeof suffix !== "string") {
+        suffix = "=>&:";
     }
 
 
-// Loop through this text, one character at a time.
-
+    // Loop through this text, one character at a time.
     c = this.charAt(i);
     while (c) {
         from = i;
 
-// Ignore whitespace.
-
-        if (c <= ' ') {
+        // Ignore whitespace.
+        if (c <= " ") {
             i += 1;
             c = this.charAt(i);
 
-// name.
-
-        } else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+        // name.
+        } else if ((c >= "a" && c <= "z") || (c >= "A" && c <= "Z")) {
             str = c;
             i += 1;
-            while (true) {
+            for (;;) {
                 c = this.charAt(i);
-                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-                        (c >= '0' && c <= '9') || c === '_') {
+                if ((c >= "a" && c <= "z") || (c >= "A" && c <= "Z") ||
+                        (c >= "0" && c <= "9") || c === "_") {
                     str += c;
                     i += 1;
                 } else {
                     break;
                 }
             }
-            result.push(make('name', str));
+            result.push(make("name", str));
 
-// number.
-
-// A number cannot start with a decimal point. It must start with a digit,
-// possibly '0'.
-
-        } else if (c >= '0' && c <= '9') {
+        // number.
+        // A number cannot start with a decimal point. It must start with a
+        // digit, possibly "0".
+        } else if (c >= "0" && c <= "9") {
             str = c;
             i += 1;
 
-// Look for more digits.
-
-            while (true) {
+            // Look for more digits.
+            for (;;) {
                 c = this.charAt(i);
-                if (c < '0' || c > '9') {
+                if (c < "0" || c > "9") {
                     break;
                 }
                 i += 1;
                 str += c;
             }
 
-// Look for a decimal fraction part.
-
-            if (c === '.') {
+            // Look for a decimal fraction part.
+            if (c === ".") {
                 i += 1;
                 str += c;
-                while (true) {
+                for (;;) {
                     c = this.charAt(i);
-                    if (c < '0' || c > '9') {
+                    if (c < "0" || c > "9") {
                         break;
                     }
                     i += 1;
@@ -126,99 +115,93 @@ String.prototype.tokens = function (prefix, suffix) {
                 }
             }
 
-// Look for an exponent part.
-
-            if (c === 'e' || c === 'E') {
+            // Look for an exponent part.
+            if (c === "e" || c === "E") {
                 i += 1;
                 str += c;
                 c = this.charAt(i);
-                if (c === '-' || c === '+') {
+                if (c === "-" || c === "+") {
                     i += 1;
                     str += c;
                     c = this.charAt(i);
                 }
-                if (c < '0' || c > '9') {
-                    make('number', str).error("Bad exponent");
+                if (c < "0" || c > "9") {
+                    make("number", str).error("Bad exponent");
                 }
                 do {
                     i += 1;
                     str += c;
                     c = this.charAt(i);
-                } while (c >= '0' && c <= '9');
+                } while (c >= "0" && c <= "9");
             }
 
-// Make sure the next character is not a letter.
-
-            if (c >= 'a' && c <= 'z') {
+            // Make sure the next character is not a letter.
+            if (c >= "a" && c <= "z") {
                 str += c;
                 i += 1;
-                make('number', str).error("Bad number");
+                make("number", str).error("Bad number");
             }
 
-// Convert the string value to a number. If it is finite, then it is a good
-// token.
-
+            // Convert the string value to a number. If it is finite, then it
+            // is a good token.
             n = +str;
             if (isFinite(n)) {
-                result.push(make('number', n));
+                result.push(make("number", n));
             } else {
-                make('number', str).error("Bad number");
+                make("number", str).error("Bad number");
             }
 
-// string
-
-        } else if (c === '\'' || c === '"') {
-            str = '';
+        // string
+        } else if (c === "'" || c === "\"") {
+            str = "";
             q = c;
             i += 1;
-            while (true) {
+            for (;;) {
                 c = this.charAt(i);
-                if (c < ' ') {
-                    make('string', str).error(
-                        (c === '\n' || c === '\r' || c === '')
+                if (c < " ") {
+                    make("string", str).error(
+                        (c === "\n" || c === "\r" || c === "")
                             ? "Unterminated string."
                             : "Control character in string.",
-                        make('', str)
+                        make("", str)
                     );
                 }
 
-// Look for the closing quote.
-
+                // Look for the closing quote.
                 if (c === q) {
                     break;
                 }
 
-// Look for escapement.
-
-                if (c === '\\') {
+                // Look for escapement.
+                if (c === "\\") {
                     i += 1;
                     if (i >= length) {
-                        make('string', str).error("Unterminated string");
+                        make("string", str).error("Unterminated string");
                     }
                     c = this.charAt(i);
                     switch (c) {
-                    case 'b':
-                        c = '\b';
+                    case "b":
+                        c = "\b";
                         break;
-                    case 'f':
-                        c = '\f';
+                    case "f":
+                        c = "\f";
                         break;
-                    case 'n':
-                        c = '\n';
+                    case "n":
+                        c = "\n";
                         break;
-                    case 'r':
-                        c = '\r';
+                    case "r":
+                        c = "\r";
                         break;
-                    case 't':
-                        c = '\t';
+                    case "t":
+                        c = "\t";
                         break;
-                    case 'u':
+                    case "u":
                         if (i >= length) {
-                            make('string', str).error("Unterminated string");
+                            make("string", str).error("Unterminated string");
                         }
                         c = parseInt(this.substr(i + 1, 4), 16);
                         if (!isFinite(c) || c < 0) {
-                            make('string', str).error("Unterminated string");
+                            make("string", str).error("Unterminated string");
                         }
                         c = String.fromCharCode(c);
                         i += 4;
@@ -229,27 +212,25 @@ String.prototype.tokens = function (prefix, suffix) {
                 i += 1;
             }
             i += 1;
-            result.push(make('string', str));
+            result.push(make("string", str));
             c = this.charAt(i);
 
-// comment.
-
-        } else if (c === '/' && this.charAt(i + 1) === '/') {
+        // comment.
+        } else if (c === "/" && this.charAt(i + 1) === "/") {
             i += 1;
-            while (true) {
+            for (;;) {
                 c = this.charAt(i);
-                if (c === '\n' || c === '\r' || c === '') {
+                if (c === "\n" || c === "\r" || c === "") {
                     break;
                 }
                 i += 1;
             }
 
-// combining
-
+        // combining
         } else if (prefix.indexOf(c) >= 0) {
             str = c;
             i += 1;
-            while (true) {
+            for (;;) {
                 c = this.charAt(i);
                 if (i >= length || suffix.indexOf(c) < 0) {
                     break;
@@ -257,13 +238,12 @@ String.prototype.tokens = function (prefix, suffix) {
                 str += c;
                 i += 1;
             }
-            result.push(make('operator', str));
+            result.push(make("operator", str));
 
-// single-character operator
-
+        // single-character operator
         } else {
             i += 1;
-            result.push(make('operator', c));
+            result.push(make("operator", c));
             c = this.charAt(i);
         }
     }
